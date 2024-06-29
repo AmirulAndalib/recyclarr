@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using Recyclarr.Common.Serilog;
 using Recyclarr.Platform;
 using Serilog.Core;
 using Serilog.Events;
@@ -8,7 +7,7 @@ using Serilog.Templates.Themes;
 
 namespace Recyclarr.Cli.Logging;
 
-public class LoggerFactory(IAppPaths paths, LoggingLevelSwitch levelSwitch)
+public class LoggerFactory(IAppPaths paths, LoggingLevelSwitch levelSwitch, IEnvironment env)
 {
     private static string GetBaseTemplateString()
     {
@@ -19,16 +18,20 @@ public class LoggerFactory(IAppPaths paths, LoggingLevelSwitch levelSwitch)
             "{@m}";
     }
 
-    private static ExpressionTemplate GetConsoleTemplate()
+    private ExpressionTemplate GetConsoleTemplate()
     {
-        var template = "[{@l:u3}] " + GetBaseTemplateString() + "\n{@x}";
+        var template = "[{@l:u3}] " + GetBaseTemplateString() +
+            "{#if SanitizedExceptionMessage is not null}: {SanitizedExceptionMessage}{#end}\n";
 
-        return new ExpressionTemplate(template, theme: TemplateTheme.Code);
+        var raw = !string.IsNullOrEmpty(env.GetEnvironmentVariable("NO_COLOR"));
+        return new ExpressionTemplate(template, theme: raw ? null : TemplateTheme.Code);
     }
 
     private static ExpressionTemplate GetFileTemplate()
     {
-        var template = "[{@t:HH:mm:ss} {@l:u3}] " + GetBaseTemplateString() + "\n{@x}";
+        var template = "[{@t:HH:mm:ss} {@l:u3}] " + GetBaseTemplateString() +
+            "{#if SanitizedExceptionMessage is not null}: {SanitizedExceptionMessage}{#end}\n" +
+            "{Inspect(@x).StackTrace}";
 
         return new ExpressionTemplate(template);
     }
@@ -40,7 +43,8 @@ public class LoggerFactory(IAppPaths paths, LoggingLevelSwitch levelSwitch)
 
         return new LoggerConfiguration()
             .MinimumLevel.Is(LogEventLevel.Verbose)
-            .Enrich.With<ExceptionMessageEnricher>()
+            .Enrich.FromLogContext()
+            .Enrich.With<FlurlExceptionSanitizingEnricher>()
             .WriteTo.Console(GetConsoleTemplate(), levelSwitch: levelSwitch)
             .WriteTo.Logger(c => c
                 .MinimumLevel.Debug()
@@ -48,7 +52,6 @@ public class LoggerFactory(IAppPaths paths, LoggingLevelSwitch levelSwitch)
             .WriteTo.Logger(c => c
                 .Filter.ByIncludingOnly(e => e.Level == LogEventLevel.Verbose)
                 .WriteTo.File(GetFileTemplate(), LogFilePath("verbose")))
-            .Enrich.FromLogContext()
             .CreateLogger();
 
         string LogFilePath(string type)

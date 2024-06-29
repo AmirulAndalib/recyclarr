@@ -3,8 +3,8 @@ using Recyclarr.Cli.Console;
 using Recyclarr.Compatibility;
 using Recyclarr.Config.ExceptionTypes;
 using Recyclarr.Config.Parsing.ErrorHandling;
-using Recyclarr.Http;
 using Recyclarr.VersionControl;
+using YamlDotNet.Core;
 
 namespace Recyclarr.Cli.Processors.ErrorHandling;
 
@@ -15,12 +15,11 @@ public class ConsoleExceptionHandler(ILogger log, IFlurlHttpExceptionHandler htt
         switch (sourceException)
         {
             case GitCmdException e:
-                log.Error(e, "Non-zero exit code {ExitCode} while executing Git command: {Error}",
-                    e.ExitCode, e.Error);
+                log.Error(e, "Non-zero exit code {ExitCode} while executing Git command", e.ExitCode);
                 break;
 
             case FlurlHttpException e:
-                log.Error("HTTP error: {Message}", e.SanitizedExceptionMessage());
+                log.Error(e, "HTTP error");
                 await httpExceptionHandler.ProcessServiceErrorMessages(new ServiceErrorMessageExtractor(e));
                 break;
 
@@ -50,7 +49,7 @@ public class ConsoleExceptionHandler(ILogger log, IFlurlHttpExceptionHandler htt
                 break;
 
             case PostProcessingException e:
-                log.Error("Configuration post-processing failed: {Message}", e.Message);
+                log.Error(e, "Configuration post-processing failed");
                 break;
 
             case ServiceIncompatibilityException e:
@@ -59,6 +58,15 @@ public class ConsoleExceptionHandler(ILogger log, IFlurlHttpExceptionHandler htt
 
             case CommandException e:
                 log.Error(e.Message);
+                break;
+
+            case YamlException e:
+                log.Error(e, "Exception while parsing settings.yml at line {Line}", e.Start.Line);
+                if (e.Data["ContextualMessage"] is string context)
+                {
+                    log.Error(context);
+                }
+
                 break;
 
             default:

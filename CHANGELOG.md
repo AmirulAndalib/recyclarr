@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- In rare circumstances outside of Recyclarr, quality profiles become invalid due to missing
+  required qualities. When this happens, users are not even able to save the profile using the
+  Sonarr or Radarr UI. Recyclarr now detects this situation and automatically repairs the quality
+  profile by re-adding these missing qualities for users. See [this issue][9738].
+
+[9738]: https://github.com/Radarr/Radarr/issues/9738
+
+## [7.0.0] - 2024-06-27
+
 This release contains **BREAKING CHANGES**. See the [v7.0 Upgrade Guide][breaking7] for required
 changes you may need to make.
 
@@ -19,6 +30,9 @@ changes you may need to make.
   specified in the `config` include directive are resolved starting at this new directory. Relative
   paths to include templates located under the `configs` directory is now **DEPRECATED**. See the
   "File Structure" page on the wiki for more details.
+- Support the [NO_COLOR] environment variable for all Recyclarr commands (#223).
+
+[NO_COLOR]: https://no-color.org/
 
 ### Changed
 
@@ -39,6 +53,7 @@ changes you may need to make.
 - CLI: CFs with no Trash ID will no longer be displayed when running the `list custom-formats`
   command (#229).
 - Docker: Support running the container in read-only mode (#231).
+- Sync: Sometimes CFs weren't deleted even with `delete_old_custom_formats` enabled (#237).
 
 ## [6.0.2] - 2023-10-20
 
@@ -957,7 +972,8 @@ See the Python Migration Guide for details on how to update your YAML configurat
 - Nearly all command line options removed in favor of YAML equivalents.
 - Completely removed old python project & source code
 
-[Unreleased]: https://github.com/recyclarr/recyclarr/compare/v6.0.2...HEAD
+[Unreleased]: https://github.com/recyclarr/recyclarr/compare/v7.0.0...HEAD
+[7.0.0]: https://github.com/recyclarr/recyclarr/compare/v6.0.2...v7.0.0
 [6.0.2]: https://github.com/recyclarr/recyclarr/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/recyclarr/recyclarr/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/recyclarr/recyclarr/compare/v5.4.3...v6.0.0

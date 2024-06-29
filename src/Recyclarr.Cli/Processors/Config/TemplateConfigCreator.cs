@@ -31,19 +31,14 @@ public class TemplateConfigCreator(
             {
                 CopyTemplate(templateFile, settings);
             }
-            catch (FileExistsException e)
-            {
-                log.Error("Template configuration file could not be saved: {Reason}", e.AttemptedPath);
-            }
             catch (FileLoadException)
             {
                 // Do not log here since the origin of this exception is ConfigParser.Load(), which already has
                 // sufficient logging.
             }
-            catch (Exception e)
+            catch (IOException e)
             {
-                log.Error(e, "Unable to save configuration template file");
-                throw;
+                log.Error(e, "Unable to save configuration template file; skipping");
             }
         }
     }
@@ -54,7 +49,7 @@ public class TemplateConfigCreator(
 
         if (destinationFile.Exists && !settings.Force)
         {
-            throw new FileExistsException($"{destinationFile} already exists");
+            throw new FileExistsException(destinationFile.FullName);
         }
 
         destinationFile.CreateParentDirectory();

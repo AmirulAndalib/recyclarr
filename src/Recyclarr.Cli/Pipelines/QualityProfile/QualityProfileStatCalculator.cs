@@ -51,7 +51,7 @@ public class QualityProfileStatCalculator(ILogger log)
     {
         using var oldJson = JsonSerializer.SerializeToDocument(oldDto.Items);
         using var newJson = JsonSerializer.SerializeToDocument(newDto.Items);
-        stats.QualitiesChanged = !oldJson.DeepEquals(newJson);
+        stats.QualitiesChanged = stats.Profile.MissingQualities.Count > 0 || !oldJson.DeepEquals(newJson);
     }
 
     private void ScoreUpdates(
@@ -72,7 +72,7 @@ public class QualityProfileStatCalculator(ILogger log)
 
         foreach (var (dto, newScore, reason) in scores)
         {
-            log.Debug("  - {Format} ({Id}): {OldScore} -> {NewScore} ({Reason})",
+            log.Debug("  - {Name} ({Id}): {OldScore} -> {NewScore} ({Reason})",
                 dto.Name, dto.Format, dto.Score, newScore, reason);
         }
 
