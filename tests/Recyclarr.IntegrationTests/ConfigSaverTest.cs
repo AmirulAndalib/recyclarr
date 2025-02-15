@@ -1,5 +1,6 @@
 using System.IO.Abstractions;
 using Recyclarr.Config.Parsing;
+using Recyclarr.TestLibrary;
 
 namespace Recyclarr.IntegrationTests;
 
@@ -12,7 +13,7 @@ public class ConfigSaverTest : IntegrationTestFixture
         var sut = Resolve<ConfigSaver>();
         var config = new RootConfigYaml
         {
-            Radarr = new Dictionary<string, RadarrConfigYaml>
+            Radarr = new Dictionary<string, RadarrConfigYaml?>
             {
                 {
                     "instance1",
@@ -36,7 +37,7 @@ public class ConfigSaverTest : IntegrationTestFixture
 
         var config = new RootConfigYaml
         {
-            Radarr = new Dictionary<string, RadarrConfigYaml>
+            Radarr = new Dictionary<string, RadarrConfigYaml?>
             {
                 {
                     "instance1",

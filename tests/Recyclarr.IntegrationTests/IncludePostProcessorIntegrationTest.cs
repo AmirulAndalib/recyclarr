@@ -2,6 +2,7 @@ using System.IO.Abstractions;
 using Recyclarr.Config.Parsing;
 using Recyclarr.Config.Parsing.PostProcessing;
 using Recyclarr.Config.Parsing.PostProcessing.ConfigMerging;
+using Recyclarr.TestLibrary;
 
 namespace Recyclarr.IntegrationTests;
 
@@ -15,7 +16,7 @@ public class IncludePostProcessorIntegrationTest : IntegrationTestFixture
 
         var config = new RootConfigYaml
         {
-            Radarr = new Dictionary<string, RadarrConfigYaml>
+            Radarr = new Dictionary<string, RadarrConfigYaml?>
             {
                 ["service1"] = new() { ApiKey = "asdf", BaseUrl = "fdsa" },
             },
@@ -44,7 +45,7 @@ public class IncludePostProcessorIntegrationTest : IntegrationTestFixture
 
         var config = new RootConfigYaml
         {
-            Radarr = new Dictionary<string, RadarrConfigYaml>
+            Radarr = new Dictionary<string, RadarrConfigYaml?>
             {
                 ["service1"] = new()
                 {
@@ -78,7 +79,7 @@ public class IncludePostProcessorIntegrationTest : IntegrationTestFixture
 
         var config = new RootConfigYaml
         {
-            Radarr = new Dictionary<string, RadarrConfigYaml>
+            Radarr = new Dictionary<string, RadarrConfigYaml?>
             {
                 ["service1"] = new()
                 {
@@ -133,7 +134,7 @@ public class IncludePostProcessorIntegrationTest : IntegrationTestFixture
 
         var config = new RootConfigYaml
         {
-            Radarr = new Dictionary<string, RadarrConfigYaml>
+            Radarr = new Dictionary<string, RadarrConfigYaml?>
             {
                 ["service1"] = new()
                 {
@@ -163,7 +164,7 @@ public class IncludePostProcessorIntegrationTest : IntegrationTestFixture
             .BeEquivalentTo(
                 new RootConfigYaml
                 {
-                    Radarr = new Dictionary<string, RadarrConfigYaml>
+                    Radarr = new Dictionary<string, RadarrConfigYaml?>
                     {
                         ["service1"] = new()
                         {

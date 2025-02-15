@@ -1,5 +1,5 @@
 using Autofac;
-using Recyclarr.IntegrationTests;
+using Recyclarr.TestLibrary;
 
 namespace Recyclarr.Cli.IntegrationTests;
 
