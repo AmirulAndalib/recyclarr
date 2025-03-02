@@ -13,6 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="JetBrains.Annotations" />
   </ItemGroup>
 
@@ -26,8 +30,10 @@
   </PropertyGroup>
 
   <!-- For only NON-TEST projects -->
-  <ItemGroup Condition="!$(ProjectName.EndsWith('.Tests'))">
-    <InternalsVisibleTo Include="$(AssemblyName).Tests" />
+  <ItemGroup Condition="!$(MSBuildProjectName.EndsWith('Tests'))">
+    <InternalsVisibleTo Include="$(MSBuildProjectName).Tests" />
+    <!-- For NSubstitute -->
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
   <!-- ReferenceTrimmer - run build with /p:EnableReferenceTrimmer=true to enable -->

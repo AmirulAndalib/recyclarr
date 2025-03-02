@@ -14,6 +14,7 @@ using Recyclarr.Cli.Processors.Delete;
 using Recyclarr.Cli.Processors.ErrorHandling;
 using Recyclarr.Cli.Processors.Sync;
 using Recyclarr.Common;
+using Recyclarr.Common.FluentValidation;
 using Recyclarr.Logging;
 using Serilog.Core;
 using Spectre.Console;
@@ -21,7 +22,7 @@ using Spectre.Console.Cli;
 
 namespace Recyclarr.Cli;
 
-public static class CompositionRoot
+internal static class CompositionRoot
 {
     public static void Setup(ContainerBuilder builder)
     {
@@ -51,10 +52,9 @@ public static class CompositionRoot
         builder.RegisterType<FlurlHttpExceptionHandler>();
 
         // Sync
-        builder.RegisterType<SyncProcessor>().As<ISyncProcessor>();
+        builder.RegisterType<SyncProcessor>();
 
         // Configuration
-        builder.RegisterType<ConfigManipulator>().As<IConfigManipulator>();
         builder.RegisterType<ConfigCreationProcessor>().As<IConfigCreationProcessor>();
         builder.RegisterType<ConfigListLocalProcessor>();
         builder.RegisterType<ConfigListTemplateProcessor>();
@@ -70,7 +70,7 @@ public static class CompositionRoot
 
     private static void RegisterMigrations(ContainerBuilder builder)
     {
-        builder.RegisterType<MigrationExecutor>().As<IMigrationExecutor>();
+        builder.RegisterType<MigrationExecutor>();
 
         // Migration Steps
         builder
@@ -89,6 +89,7 @@ public static class CompositionRoot
         builder.RegisterType<IndirectLoggerDecorator>().As<ILogger>();
 
         builder.RegisterType<LogJanitor>();
+        builder.RegisterType<ValidationLogger>();
     }
 
     private static void CliRegistrations(ContainerBuilder builder)

@@ -5,12 +5,11 @@ using Recyclarr.ServarrApi.MediaNaming;
 
 namespace Recyclarr.Cli.Tests.Pipelines.MediaNaming;
 
-[TestFixture]
 [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope")]
-public class MediaNamingTransactionPhaseSonarrTest
+internal sealed class MediaNamingTransactionPhaseSonarrTest
 {
     [Test, AutoMockData]
-    public void Sonarr_left_null(MediaNamingTransactionPhase sut)
+    public async Task Sonarr_left_null(MediaNamingTransactionPhase sut)
     {
         var context = new MediaNamingPipelineContext
         {
@@ -29,15 +28,15 @@ public class MediaNamingTransactionPhaseSonarrTest
             },
         };
 
-        sut.Execute(context);
+        await sut.Execute(context, CancellationToken.None);
 
         context
             .TransactionOutput.Should()
-            .BeEquivalentTo(context.ConfigOutput.Dto, o => o.RespectingRuntimeTypes());
+            .BeEquivalentTo(context.ConfigOutput.Dto, o => o.PreferringRuntimeMemberTypes());
     }
 
     [Test, AutoMockData]
-    public void Sonarr_right_null(MediaNamingTransactionPhase sut)
+    public async Task Sonarr_right_null(MediaNamingTransactionPhase sut)
     {
         var context = new MediaNamingPipelineContext
         {
@@ -53,15 +52,15 @@ public class MediaNamingTransactionPhaseSonarrTest
             ConfigOutput = new ProcessedNamingConfig { Dto = new SonarrMediaNamingDto() },
         };
 
-        sut.Execute(context);
+        await sut.Execute(context, CancellationToken.None);
 
         context
             .TransactionOutput.Should()
-            .BeEquivalentTo(context.ApiFetchOutput, o => o.RespectingRuntimeTypes());
+            .BeEquivalentTo(context.ApiFetchOutput, o => o.PreferringRuntimeMemberTypes());
     }
 
     [Test, AutoMockData]
-    public void Sonarr_right_and_left_with_rename(MediaNamingTransactionPhase sut)
+    public async Task Sonarr_right_and_left_with_rename(MediaNamingTransactionPhase sut)
     {
         var context = new MediaNamingPipelineContext
         {
@@ -88,15 +87,15 @@ public class MediaNamingTransactionPhaseSonarrTest
             },
         };
 
-        sut.Execute(context);
+        await sut.Execute(context, CancellationToken.None);
 
         context
             .TransactionOutput.Should()
-            .BeEquivalentTo(context.ConfigOutput.Dto, o => o.RespectingRuntimeTypes());
+            .BeEquivalentTo(context.ConfigOutput.Dto, o => o.PreferringRuntimeMemberTypes());
     }
 
     [Test, AutoMockData]
-    public void Sonarr_right_and_left_without_rename(MediaNamingTransactionPhase sut)
+    public async Task Sonarr_right_and_left_without_rename(MediaNamingTransactionPhase sut)
     {
         var context = new MediaNamingPipelineContext
         {
@@ -123,7 +122,7 @@ public class MediaNamingTransactionPhaseSonarrTest
             },
         };
 
-        sut.Execute(context);
+        await sut.Execute(context, CancellationToken.None);
 
         context
             .TransactionOutput.Should()
@@ -137,7 +136,7 @@ public class MediaNamingTransactionPhaseSonarrTest
                     DailyEpisodeFormat = "episodes_daily_default2",
                     AnimeEpisodeFormat = "episodes_anime_default2",
                 },
-                o => o.RespectingRuntimeTypes()
+                o => o.PreferringRuntimeMemberTypes()
             );
     }
 }

@@ -1,13 +1,12 @@
 using Recyclarr.Cli.Console.Settings;
 using Recyclarr.Cli.Pipelines.CustomFormat;
-using Recyclarr.Tests.TestLibrary;
+using Recyclarr.Core.TestLibrary;
 using Recyclarr.TrashGuide.CustomFormat;
 using Spectre.Console.Testing;
 
 namespace Recyclarr.Cli.Tests.Pipelines.CustomFormat;
 
-[TestFixture]
-public class CustomFormatDataListerTest
+internal sealed class CustomFormatDataListerTest
 {
     [Test, AutoMockData]
     public void Custom_formats_appear_in_console_output(

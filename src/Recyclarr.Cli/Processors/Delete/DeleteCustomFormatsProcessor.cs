@@ -4,6 +4,7 @@ using Autofac;
 using Recyclarr.Cli.Console;
 using Recyclarr.Cli.Console.Settings;
 using Recyclarr.Config;
+using Recyclarr.Config.Filtering;
 using Recyclarr.Config.Models;
 using Recyclarr.ServarrApi.CustomFormat;
 using Recyclarr.TrashGuide.CustomFormat;
@@ -18,10 +19,10 @@ internal class CustomFormatConfigurationScope(ILifetimeScope scope) : Configurat
         scope.Resolve<ICustomFormatApiService>();
 }
 
-public class DeleteCustomFormatsProcessor(
+internal class DeleteCustomFormatsProcessor(
     ILogger log,
     IAnsiConsole console,
-    IConfigurationRegistry configRegistry,
+    ConfigurationRegistry configRegistry,
     ConfigurationScopeFactory scopeFactory
 ) : IDeleteCustomFormatsProcessor
 {

@@ -5,16 +5,15 @@ using Recyclarr.ServarrApi.MediaNaming;
 
 namespace Recyclarr.Cli.Tests.Pipelines.MediaNaming;
 
-[TestFixture]
 [SuppressMessage(
     "Reliability",
     "CA2000:Dispose objects before losing scope",
     Justification = "Do not care about disposal in a testing context"
 )]
-public class MediaNamingTransactionPhaseRadarrTest
+internal sealed class MediaNamingTransactionPhaseRadarrTest
 {
     [Test, AutoMockData]
-    public void Radarr_left_null(MediaNamingTransactionPhase sut)
+    public async Task Radarr_left_null(MediaNamingTransactionPhase sut)
     {
         var context = new MediaNamingPipelineContext
         {
@@ -30,15 +29,15 @@ public class MediaNamingTransactionPhaseRadarrTest
             },
         };
 
-        sut.Execute(context);
+        await sut.Execute(context, CancellationToken.None);
 
         context
             .TransactionOutput.Should()
-            .BeEquivalentTo(context.ConfigOutput.Dto, o => o.RespectingRuntimeTypes());
+            .BeEquivalentTo(context.ConfigOutput.Dto, o => o.PreferringRuntimeMemberTypes());
     }
 
     [Test, AutoMockData]
-    public void Radarr_right_null(MediaNamingTransactionPhase sut)
+    public async Task Radarr_right_null(MediaNamingTransactionPhase sut)
     {
         var context = new MediaNamingPipelineContext
         {
@@ -51,15 +50,15 @@ public class MediaNamingTransactionPhaseRadarrTest
             ConfigOutput = new ProcessedNamingConfig { Dto = new RadarrMediaNamingDto() },
         };
 
-        sut.Execute(context);
+        await sut.Execute(context, CancellationToken.None);
 
         context
             .TransactionOutput.Should()
-            .BeEquivalentTo(context.ApiFetchOutput, o => o.RespectingRuntimeTypes());
+            .BeEquivalentTo(context.ApiFetchOutput, o => o.PreferringRuntimeMemberTypes());
     }
 
     [Test, AutoMockData]
-    public void Radarr_right_and_left_with_rename(MediaNamingTransactionPhase sut)
+    public async Task Radarr_right_and_left_with_rename(MediaNamingTransactionPhase sut)
     {
         var context = new MediaNamingPipelineContext
         {
@@ -80,15 +79,15 @@ public class MediaNamingTransactionPhaseRadarrTest
             },
         };
 
-        sut.Execute(context);
+        await sut.Execute(context, CancellationToken.None);
 
         context
             .TransactionOutput.Should()
-            .BeEquivalentTo(context.ConfigOutput.Dto, o => o.RespectingRuntimeTypes());
+            .BeEquivalentTo(context.ConfigOutput.Dto, o => o.PreferringRuntimeMemberTypes());
     }
 
     [Test, AutoMockData]
-    public void Radarr_right_and_left_without_rename(MediaNamingTransactionPhase sut)
+    public async Task Radarr_right_and_left_without_rename(MediaNamingTransactionPhase sut)
     {
         var context = new MediaNamingPipelineContext
         {
@@ -109,7 +108,7 @@ public class MediaNamingTransactionPhaseRadarrTest
             },
         };
 
-        sut.Execute(context);
+        await sut.Execute(context, CancellationToken.None);
 
         context
             .TransactionOutput.Should()
@@ -120,7 +119,7 @@ public class MediaNamingTransactionPhaseRadarrTest
                     StandardMovieFormat = "file_format2",
                     MovieFolderFormat = "folder_format2",
                 },
-                o => o.RespectingRuntimeTypes()
+                o => o.PreferringRuntimeMemberTypes()
             );
     }
 }
